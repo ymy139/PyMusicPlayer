@@ -1,0 +1,30 @@
+[project]
+name = "PyMusicPlayer"
+version = "0.1.0"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+description = ""
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.11"
+dependencies = [
+    "mutagen>=1.47.0",
+    "pyside6>=6.9.2",
+    "python-magic>=0.4.27",
+    "python-magic-bin>=0.4.14; sys_platform == 'win32'",
+    "qtawesome>=1.4.0",
+]
+authors = [
+    { name = "ymy139" , email = "ymy213456@163.com"},
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.30.1",
+    "ipython>=9.4.0",
+    "objprint>=0.3.0",
+    "pyinstaller>=6.15.0",
+]
+
+[[tool.uv.index]]
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+default = true
