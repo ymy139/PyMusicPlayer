@@ -6,7 +6,7 @@ from qtawesome import icon as qtawesomeIcon
 
 from .widgets import SideMenuBar, TitleBar, PlayStateBar, Pages
 from ..utils import getCursorDirection, humanizeDuration
-from ..types_ import MediaItem
+from ..types_ import MediaItem, MediaInfo
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -278,3 +278,7 @@ class MainWindow(QMainWindow):
             self.playListPage.playList.setItem(index, 2, tableItem)
 
             self.playListPage.playList.setItem(index, 3, QTableWidgetItem(humanizeDuration(item.mediaInfo.lengthMs)))
+            
+    def updateMediaInfo(self, mediaInfo: MediaInfo):
+        self.playStateBar.setMediaInfo(mediaInfo)
+        self.musicDetailPage.setMediaInfo(mediaInfo)

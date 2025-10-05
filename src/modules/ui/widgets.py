@@ -267,14 +267,7 @@ class MarqueeLabel(QScrollArea):
             
             self.animation.start()
         
-        try:
-            self.timer.timeout.disconnect()
-        except TypeError:
-            # This case is for PyQt
-            pass
-        except RuntimeWarning:
-            # And this case is for PySide
-            pass
+        self.timer.timeout.disconnect()
         self.timer.timeout.connect(scrollToRight)
         self.timer.start(1500)
         
@@ -726,7 +719,7 @@ class PlayStateBar(QFrame):
         self.setMinimumHeight(55)
         self._isShowingDetails = False
         
-    def setMusicInfo(self, musicInfo: MediaInfo):
+    def setMediaInfo(self, musicInfo: MediaInfo):
         self.musicCover.setPixmap(createRoundedPixmap(QPixmap(str(musicInfo.coverPath)), 30))
         self.musicTitle.setText(musicInfo.title)
         self.musicArtist.setText(musicInfo.artist)
@@ -978,7 +971,7 @@ class Pages(object):
             self._layout.addWidget(self.lyricDisplayer)
             self._layout.setStretchFactor(self.lyricDisplayer, 1)
             
-        def setMusicInfo(self, info: MediaInfo):
+        def setMediaInfo(self, info: MediaInfo):
             self.title.setText(info.title)
             self.album.setText(info.album)
             self.artist.setText(info.artist)

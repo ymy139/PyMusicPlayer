@@ -4,9 +4,11 @@ import re
 
 from PySide6.QtGui import QPainter, QPainterPath
 from PySide6.QtCore import QRectF, Qt, QPoint, QSize
-from PySide6.QtGui import QPixmap, QIcon, QColor
+from PySide6.QtGui import QPixmap
+from mutagen import flac, id3, mp3
+from magic import from_file as checkFileType
 
-from .types_ import LrcObject
+from .types_ import MediaInfo, MediaItem, LrcObject
 
 def createRoundedPixmap(pixmap: QPixmap, radius: Union[int, float], targetSize: QSize | None = None) -> QPixmap:
     if pixmap.isNull():
@@ -89,3 +91,63 @@ def parseLrc(lrcContent: str):
                 lrcList.append(LrcObject(totalMs, lyric))
     lrcList.sort(key=lambda x: x.timeMs)
     return lrcList
+
+def getMediaItemFromPath(mediaPath: Path, lyricsDir: Path, coversDir: Path) -> MediaItem:
+    fileMimeType = checkFileType(str(mediaPath), mime=True)
+    
+    if fileMimeType == "audio/x-flac":
+        file = flac.FLAC(mediaPath)
+        
+        title: str = file.get("title", [mediaPath.name])[0] # pyright: ignore[reportOptionalSubscript]
+        
+        artists: list[str] = file.get("artist", ["未知歌手"]) # pyright: ignore[reportAssignmentType]
+        artist = ""
+        for i in artists:
+            artist += i
+            
+        album: str = file.get("album", ["未知专辑"])[0] # pyright: ignore[reportOptionalSubscript]
+        
+        lengthMs: int = round(file.info.length * 1000)
+        
+        try:
+            coverData: bytes = file.pictures[0].data
+            coverFilePath = Path(coversDir / mediaPath.stem)
+            coverFile = open(coverFilePath, "wb")
+            coverFile.write(coverData)
+            coverFile.close()
+        except Exception as e:
+            coverFilePath = None
+            
+        lyricsFilePath = Path(lyricsDir / mediaPath.stem).with_suffix(".lrc")
+        if not lyricsFilePath.exists():
+            lyricsFilePath = None
+        
+        info = MediaInfo(title, artist, album, lengthMs, coverFilePath, lyricsFilePath)
+        return MediaItem(mediaPath, info)
+    
+    elif fileMimeType == "audio/mpeg":
+        file = mp3.MP3(mediaPath, ID3=id3.ID3)
+        
+        title = str(file.get('TIT2', mediaPath.name))
+        artist = str(file.get('TPE1', "未知歌手"))
+        album = str(file.get('TALB', "未知专辑"))
+        lengthMs = round(file.info.length * 1000)
+        
+        try:
+            coverData: bytes = file.tags.getall("APIC")[0].data  # pyright: ignore[reportOptionalMemberAccess]
+            coverFilePath = Path(coversDir / (mediaPath.name + ".jpg"))
+            coverFile = open(coverFilePath, "wb")
+            coverFile.write(coverData)
+            coverFile.close()
+        except Exception as e:
+            coverFilePath = None
+            
+        lyricsFilePath = Path(lyricsDir / mediaPath.stem).with_suffix(".lrc")
+        if not lyricsFilePath.exists():
+            lyricsFilePath = None
+            
+        info = MediaInfo(title, artist, album, lengthMs, coverFilePath, lyricsFilePath)
+        return MediaItem(mediaPath, info)
+        
+    else:
+        raise TypeError(f"Unsupported file type: {fileMimeType}")
