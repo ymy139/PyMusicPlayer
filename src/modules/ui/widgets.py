@@ -1000,7 +1000,7 @@ class Pages(object):
             else:
                 self.cover.setPixmap(createRoundedPixmap(QPixmap("res/imgs/defaultCover.png"), 30, self._coverSize))
             if info.lyricsPath:
-                with open(info.lyricsPath, "r") as file:
+                with open(info.lyricsPath, "r", encoding="utf-8") as file:
                     self.lyricDisplayer.setLrcContent(file.read())
             else:
                 self.lyricDisplayer.setLrcContent("[00:00.000] 暂无歌词")
