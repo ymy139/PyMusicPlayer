@@ -22,6 +22,10 @@ class MainWindow(QMainWindow):
                     border: 2px solid #343b48; 
                     border-radius: 5px; 
                 }
+                
+                QWidget {
+                    outline: none;
+                }
             """)
         self._centralLayout = QVBoxLayout()
         self._centralLayout.setContentsMargins(self._contentsMargin, 

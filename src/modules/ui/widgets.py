@@ -313,7 +313,6 @@ class TitleCard(QFrame):
         _font = self.font()
         _font.setPointSize(17)
         title.setFont(_font)
-        # title.setFont(QFont("Arial", 17))
         title.setStyleSheet("color: #c3ccdf;")
         
         subtitle = QLabel("Simple, beautiful music player", self)
@@ -321,7 +320,6 @@ class TitleCard(QFrame):
         _font = self.font()
         _font.setPointSize(10)
         subtitle.setFont(_font)
-        # subtitle.setFont(QFont("Arial", 10))
         subtitle.setStyleSheet("color: #5688e0;")
     
 class Line(QFrame):
@@ -396,7 +394,6 @@ class SideMenuBar(QFrame):
         _font.setPointSize(11)
         _font.setBold(False)
         self.menuList.setFont(_font)
-        # self.menuList.setFont(QFont("HarmonyOS Sans SC", 12))
         
         # init menu items
         # `id` is used to identify the menu item when the menu item is clicked.
@@ -469,7 +466,6 @@ class TitleBar(QFrame):
         _font = self.font()
         _font.setPointSize(10)
         self.label.setFont(_font)
-        # self.label.setFont(QFont("HarmonyOS Sans SC", 9))
         self.label.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         
         spacer = QSpacerItem(40, 20, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
@@ -533,7 +529,6 @@ class PlayStateBar(QFrame):
         _font = self.font()
         _font.setPointSize(16)
         self.musicCover.setFont(_font)
-        # self.musicCover.setFont(QFont("HarmonyOS Sans SC", 16))
         self.musicCover.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
         self.musicCover.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         self.musicCover.setStyleSheet("""
@@ -553,7 +548,6 @@ class PlayStateBar(QFrame):
         _font.setPointSize(12)
         _font.setBold(True)
         self.musicTitle.setFont(_font)
-        # self.musicTitle.setFont(QFont("HarmonyOS Sans SC", 13, weight=QFont.Weight.Bold))
         self.musicTitle.setMaximumHeight(25)
         self.musicTitle.setStyleSheet("border: none; color: #c3ccdf;")
         
@@ -562,7 +556,6 @@ class PlayStateBar(QFrame):
         _font = self.font()
         _font.setPointSize(9)
         self.musicArtist.setFont(_font)
-        # self.musicArtist.setFont(QFont("HarmonyOS Sans SC", 9))
         self.musicArtist.setMaximumHeight(20)
         self.musicArtist.setStyleSheet("border: none; color: #c3ccdf;")
         
@@ -746,7 +739,6 @@ class Pages(object):
             _font = self.font()
             _font.setPointSize(16)
             welcome.setFont(_font)
-            # welcome.setFont(QFont('HarmonyOS Sans SC', 16))
             welcome.setAlignment(Qt.AlignmentFlag.AlignCenter)
             welcome.setStyleSheet('color: #848fa3')
             
@@ -825,7 +817,6 @@ class Pages(object):
             _font = self.font()
             _font.setPointSize(10)
             self.songCount.setFont(_font)
-            # self.songCount.setFont(QFont("HarmonyOS Sans SC", 10))
             self.songCount.setStyleSheet("color: #c3ccdf")
             self.songCount.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
             
@@ -833,7 +824,6 @@ class Pages(object):
             _font = self.font()
             _font.setPointSize(10)
             self.syncStatus.setFont(_font)
-            # self.syncStatus.setFont(QFont("HarmonyOS Sans SC", 10))
             self.syncStatus.setStyleSheet("color: #c3ccdf")
             self.syncStatus.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             
@@ -867,12 +857,12 @@ class Pages(object):
             _font = self.font()
             _font.setPointSize(10)
             self.playList.setFont(_font)
-            # self.playList.setFont(QFont("HarmonyOS Sans SC", 10))
             self.playList.setStyleSheet("""
                 QTableWidget{ 
                     border: 1px solid rgb(59, 64, 74);
                     border-radius: 5px;
                     outline: none;
+                    gridline-color: rgb(59, 64, 74);
                 }
                 
                 QTableWidget::item{ 
@@ -887,6 +877,40 @@ class Pages(object):
                     border: none;
                     border-radius: none;
                     background-color: rgb(56, 61, 71);
+                }
+                
+                QScrollBar:vertical {
+                    width: 12px;
+                    margin: 0px;
+                    background-color: transparent;
+                    border-radius: none;
+                    border-left: 1px solid rgb(59, 64, 74);
+                }
+
+                QScrollBar::handle:vertical {
+                    background-color: #555555;
+                    border-radius: 2px;
+                    min-height: 20px;
+                    margin: 3px;
+                }
+
+                QScrollBar::handle:vertical:hover {
+                    background-color: #777777;
+                }
+
+                QScrollBar::handle:vertical:pressed {
+                    background-color: #888888;
+                }
+
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                    border: none;
+                    background: none;
+                    width: 0px;
+                    height: 0px;
+                }
+
+                QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                    background: none;
                 }""")
             
             self._layout.addLayout(topLayout)
@@ -894,10 +918,9 @@ class Pages(object):
             self._layout.addWidget(self.playList)
             
         def resetColumnsWidth(self):
-            widgetWidth = self.width()
+            # 12px is the width of scrollbar
+            widgetWidth = self.width() - 12
             widths = [int(widgetWidth * 0.42), int(widgetWidth * 0.2), int(widgetWidth * 0.27), int(widgetWidth * 0.11)]
-            widths[1] += widgetWidth - sum(widths)
-            widths[3] -= 25
             
             for index, width in enumerate(widths):
                 self.playList.setColumnWidth(index, width)
@@ -931,7 +954,6 @@ class Pages(object):
             _font.setPointSize(24)
             _font.setBold(True)
             self.title.setFont(_font)
-            # self.title.setFont(QFont("HarmonyOS Sans SC", 24, QFont.Weight.Bold))
             self.title.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
             self.title.setStyleSheet("color: #c3ccdf")
             
@@ -940,7 +962,6 @@ class Pages(object):
             _font = self.font()
             _font.setPointSize(16)
             self.artist.setFont(_font)
-            # self.artist.setFont(QFont("HarmonyOS Sans SC", 16))
             self.artist.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
             self.artist.setStyleSheet("color: #c3ccdf")
             
@@ -949,7 +970,6 @@ class Pages(object):
             _font = self.font()
             _font.setPointSize(16)
             self.album.setFont(_font)
-            # self.album.setFont(QFont("HarmonyOS Sans SC", 16))
             self.album.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
             self.album.setStyleSheet("color: #c3ccdf")
             
@@ -999,13 +1019,11 @@ class Pages(object):
             _font.setPointSize(24)
             _font.setBold(True)
             title.setFont(_font)
-            # title.setFont(QFont("HarmonyOS Sans SC", 24, QFont.Weight.Bold))
             
             subtitle = QLabel("简洁美观的专注于本地音乐的播放器")
             _font = self.font()
             _font.setPointSize(16)
             subtitle.setFont(_font)
-            # subtitle.setFont(QFont("HarmonyOS Sans SC", 16))
             
             line = Line(color="#21252d")
             
