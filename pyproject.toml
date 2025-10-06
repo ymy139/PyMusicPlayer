@@ -7,10 +7,9 @@ description = ""
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.11"
 dependencies = [
+    "filetype>=1.2.0",
     "mutagen>=1.47.0",
     "pyside6>=6.9.2",
-    "python-magic>=0.4.27",
-    "python-magic-bin>=0.4.14; sys_platform == 'win32'",
     "qtawesome>=1.4.0",
 ]
 authors = [

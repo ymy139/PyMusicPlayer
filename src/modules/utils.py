@@ -6,7 +6,7 @@ from PySide6.QtGui import QPainter, QPainterPath
 from PySide6.QtCore import QRectF, Qt, QPoint, QSize
 from PySide6.QtGui import QPixmap
 from mutagen import flac, id3, mp3
-from magic import from_file as checkFileType
+from filetype import guess_mime as checkFileType
 
 from .types_ import MediaInfo, MediaItem, LrcObject
 
@@ -93,7 +93,7 @@ def parseLrc(lrcContent: str):
     return lrcList
 
 def getMediaItemFromPath(mediaPath: Path, lyricsDir: Path, coversDir: Path) -> MediaItem:
-    fileMimeType = checkFileType(str(mediaPath), mime=True)
+    fileMimeType = checkFileType(str(mediaPath))
     
     if fileMimeType == "audio/x-flac":
         file = flac.FLAC(mediaPath)

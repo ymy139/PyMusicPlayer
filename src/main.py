@@ -77,6 +77,6 @@ updateTimer.timeout.connect(updateSliderProgress)
 updateTimer.start()
 
 # test player
-player.updatePlayList(Path("/home/ymy139/Music"), Path("/home/ymy139/Music/lrc"), Path("cache"))
+player.updatePlayList(Path("D:\\CloudMusic"), Path("G:\\lrc"), Path("cache"))
 window.show()
 app.exec()
