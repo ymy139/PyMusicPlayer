@@ -69,6 +69,7 @@ window.playStateBar.previousButton.clicked.connect(player.previous)
 window.playStateBar.musicPlayProgress.sliderPressed.connect(onSliderPressed)
 window.playStateBar.musicPlayProgress.sliderReleased.connect(onSliderReleased)
 window.playListPage.playList.itemDoubleClicked.connect(play)
+window.musicDetailPage.lyricDisplayer.setGetTimeFunc(player.getPositionMs)
 
 # update slider's progress from time to time
 updateTimer = QTimer()

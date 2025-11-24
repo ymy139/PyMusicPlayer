@@ -17,3 +17,4 @@
 - [ ] 打通SMTC（win + IBus（Linux
 - [ ] 重构 + 细分git commit
 - [ ] 随机一言
+- [ ] MarqueeLabel改MarqueeWidget，通过addwidget添加组件

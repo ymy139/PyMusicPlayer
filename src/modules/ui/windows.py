@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QWidget, QHBoxLayout, 
-                               QStackedLayout, QFrame, QListWidgetItem, QTableWidgetItem)
+                               QStackedLayout, QFrame, QListWidgetItem, QApplication,
+                               QTableWidgetItem)
 from PySide6.QtCore import Qt, QRect, QPoint
 from PySide6.QtGui import QMouseEvent, QIcon
 from qtawesome import icon as qtawesomeIcon
@@ -231,6 +232,7 @@ class MainWindow(QMainWindow):
         return super().mouseReleaseEvent(a0)
         
     def onMenuClicked(self, item: QListWidgetItem):
+        size = self.size()
         if item.data(Qt.ItemDataRole.UserRole) == "Home":
             self._pagesLayout.setCurrentIndex(0)
             self.playStateBar.showDetails()
@@ -246,6 +248,9 @@ class MainWindow(QMainWindow):
         elif item.data(Qt.ItemDataRole.UserRole) == "Settings":
             self._pagesLayout.setCurrentIndex(4)
             self.playStateBar.showDetails()
+        self.update()
+        QApplication.processEvents()
+        self.resize(size)
             
     def onPlayerReady(self, playList: list[MediaItem]):
         self.playListPage.songCount.setText(f"当前列表中有 {len(playList)} 首歌曲")

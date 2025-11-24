@@ -164,6 +164,10 @@ class LyricWidget(QTextBrowser):
         
         if len(parsedLrcContent) == 1:
             displayText += ('<b style="font-size: 22px">' + parsedLrcContent[0].text + '</b>')
+        
+        elif parsedLrcContent[-1].timeMs <= nowTimeMs:
+            displayText += ('<b style="font-size: 22px">' + parsedLrcContent[-1].text + '</b>')    
+        
         else:
             for i, lrc in enumerate(parsedLrcContent):
                 if lrc.timeMs >= nowTimeMs:
@@ -201,21 +205,19 @@ class MarqueeLabel(QScrollArea):
         containerLayout.setContentsMargins(0, 0, 0, 0)
         containerLayout.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
         
-        self.label = QLabel("Hello, World!"*10)
+        self.label = QLabel()
         self.label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         
         containerLayout.addWidget(self.label)
         
     def autoAdjustSize(self):
-        viewportHeight = self.viewport().height() # pyright: ignore[reportOptionalMemberAccess]
+        # viewportHeight = self.viewport().height() # pyright: ignore[reportOptionalMemberAccess]
         
-        self.container.setMinimumHeight(viewportHeight)
-        
-        self.label.setMinimumHeight(viewportHeight)
-        self.label.setMaximumHeight(viewportHeight)
+        # self.label.setMaximumHeight(viewportHeight)
         
         self.container.adjustSize()
         self.label.adjustSize()
+        self.setMaximumHeight(self.container.size().height())
         
     def checkIsScrollNeeded(self):
         labelWidth = self.label.sizeHint().width()
@@ -933,45 +935,54 @@ class Pages(object):
         def __init__(self) -> None:
             super().__init__()
             self._layout = QHBoxLayout()
+            self._layout.setSpacing(3)
             
             self.setLayout(self._layout)
             self.setMouseTracking(True)
             self.setupWidgets()
             
         def setupWidgets(self) -> None:
-            rightLayout = QVBoxLayout()
+            leftLayout = QVBoxLayout()
+            sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+            styleSheet = "color: #c3ccdf;"
+            alignment = Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter
             
             # TODO: Cover Size add to config
             self._coverSize = QSize(250, 250)
             self.cover = QLabel()
-            self.cover.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
-            self.cover.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+            self.cover.setAlignment(alignment)
+            # self.cover.setSizePolicy(sizePolicy)
             self.cover.setPixmap(createRoundedPixmap(QPixmap("res/imgs/defaultCover.png"), 30, self._coverSize))
             
-            self.title = QLabel("Title")
-            self.title.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+            self.title = MarqueeLabel()
+            self.title.setText("Title")
+            # self.title.setSizePolicy(sizePolicy)
             _font = self.font()
             _font.setPointSize(24)
             _font.setBold(True)
             self.title.setFont(_font)
-            self.title.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
-            self.title.setStyleSheet("color: #c3ccdf")
+            self.title.setAlignment(alignment)
+            self.title.setStyleSheet(styleSheet)
             
-            self.artist = QLabel("Artist")
-            self.artist.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+            self.artist = MarqueeLabel()
+            self.artist.setText("Artist")
+            # self.artist.setSizePolicy(sizePolicy)
             _font = self.font()
             _font.setPointSize(16)
             self.artist.setFont(_font)
-            self.artist.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
-            self.artist.setStyleSheet("color: #c3ccdf")
+            self.artist.setAlignment(alignment)
+            self.artist.setStyleSheet(styleSheet)
+            self.artist.setSizePolicy(sizePolicy)
             
-            self.album = QLabel("Album")
-            self.album.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+            self.album = MarqueeLabel()
+            self.album.setText("Album")
+            self.album.setSizePolicy(sizePolicy)
             _font = self.font()
             _font.setPointSize(16)
             self.album.setFont(_font)
-            self.album.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter)
-            self.album.setStyleSheet("color: #c3ccdf")
+            self.album.setAlignment(alignment)
+            self.album.setStyleSheet(styleSheet)
+            self.album.setSizePolicy(sizePolicy)
             
             self.lyricDisplayer = LyricWidget()
             self.lyricDisplayer.setStyleSheet("""
@@ -980,14 +991,14 @@ class Pages(object):
                     background-color: rgb(44, 49, 60);
                 }""")
             
-            rightLayout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
-            rightLayout.addWidget(self.cover)
-            rightLayout.addWidget(self.title)
-            rightLayout.addWidget(self.artist)
-            rightLayout.addWidget(self.album)
-            rightLayout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
-            self._layout.addLayout(rightLayout)
-            self._layout.setStretchFactor(rightLayout, 1)
+            leftLayout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding))
+            leftLayout.addWidget(self.cover)
+            leftLayout.addWidget(self.title)
+            leftLayout.addWidget(self.artist)
+            leftLayout.addWidget(self.album)
+            leftLayout.addItem(QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding))
+            self._layout.addLayout(leftLayout)
+            self._layout.setStretchFactor(leftLayout, 1)
             self._layout.addWidget(self.lyricDisplayer)
             self._layout.setStretchFactor(self.lyricDisplayer, 1)
             
@@ -1004,6 +1015,14 @@ class Pages(object):
                     self.lyricDisplayer.setLrcContent(file.read())
             else:
                 self.lyricDisplayer.setLrcContent("[00:00.000] 暂无歌词")
+                
+        def resizeEvent(self, event: QResizeEvent) -> None:
+            width = self._layout.geometry().width()
+            self.title.setMaximumWidth(int((width-3)/2))
+            self.artist.setMaximumWidth(int((width-3)/2))
+            self.album.setMaximumWidth(int((width-3)/2))
+            self.lyricDisplayer.setMaximumWidth(int((width-3)/2))
+            return super().resizeEvent(event)
 
     class AboutPage(QScrollArea):
         def __init__(self) -> None:
