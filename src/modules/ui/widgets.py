@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (QFrame, QWidget, QVBoxLayout, QLabel, QListWidget
                                QListWidgetItem, QSpacerItem, QSizePolicy, QHBoxLayout,
                                QPushButton, QSlider, QScrollArea, QLayout, QProgressBar,
                                QTableWidget, QHeaderView, QAbstractItemView, QStyledItemDelegate,
-                               QStyleOptionViewItem, QStyle, QTextBrowser)
+                               QStyleOptionViewItem, QStyle, QTextBrowser, QCheckBox)
 from PySide6.QtCore import (Qt, QSize, QPropertyAnimation, QTimer, Property, QEasingCurve, 
                             QParallelAnimationGroup, QSequentialAnimationGroup, QEvent, 
                             QModelIndex, QPersistentModelIndex, QAbstractItemModel)
@@ -1060,5 +1060,7 @@ class Pages(object):
             self.setupWidgets()
             
         def setupWidgets(self) -> None:
-            self._layout.addWidget(QLabel("TODO"))
+            self.randomMode = QCheckBox("随机播放模式")
+            
+            self._layout.addWidget(self.randomMode)
             self._layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))

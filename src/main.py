@@ -13,12 +13,12 @@ from pathlib import Path
 
 from PySide6.QtMultimedia import QMediaDevices
 from PySide6.QtWidgets import QTableWidgetItem
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Qt
 from qtawesome import icon as qtawesomeIcon
 
 from modules.ui.windows import MainWindow
 from modules.player import Player
-from modules.types_ import PlayStatus, PlayerStatus
+from modules.types_ import PlayStatus, PlayerStatus, PlayMode
 from modules.utils import humanizeDuration
 
 player = Player(QMediaDevices.defaultAudioOutput())
@@ -59,6 +59,12 @@ def updateSliderProgress():
         except ZeroDivisionError: pass
         window.playStateBar.musicTimePlayed.setText(humanizeDuration(player.getPositionMs()))
 
+def setRandomMode(state: Qt.CheckState):
+    if state == Qt.CheckState.Checked: 
+        player.setPlayMode(PlayMode.RANDOM)
+    else: 
+        player.setPlayMode(PlayMode.LOOP_LIST)
+
 # connect signals
 player.playerReady.connect(window.onPlayerReady)
 player.onNextSong.connect(window.updateMediaInfo)
@@ -70,6 +76,7 @@ window.playStateBar.musicPlayProgress.sliderPressed.connect(onSliderPressed)
 window.playStateBar.musicPlayProgress.sliderReleased.connect(onSliderReleased)
 window.playListPage.playList.itemDoubleClicked.connect(play)
 window.musicDetailPage.lyricDisplayer.setGetTimeFunc(player.getPositionMs)
+window.settingsPage.randomMode.checkStateChanged.connect(setRandomMode)
 
 # update slider's progress from time to time
 updateTimer = QTimer()

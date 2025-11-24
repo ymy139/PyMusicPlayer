@@ -24,7 +24,7 @@ class Player(QObject):
         self._mediaPlayer.setAudioOutput(self._audioOutput)
         self._mediaPlayer.mediaStatusChanged.connect(self._onMediaStatusChanged)
         
-        self._playMode = False
+        self._playMode = PlayMode.LOOP_LIST
         self._playingStatus = PlayStatus.STOPPED
         self._playerStatus = PlayerStatus.READY
         self._playList: list[MediaItem] = []
@@ -98,7 +98,7 @@ class Player(QObject):
     
     def _onMediaStatusChanged(self, status: QMediaPlayer.MediaStatus) -> None: 
         if status == QMediaPlayer.MediaStatus.EndOfMedia:
-            if self._playMode == PlayMode.LOOP:
+            if self._playMode == PlayMode.LOOP_ONE:
                 self.play(self._currentIndex)
             else:
                 self.next()
@@ -106,7 +106,7 @@ class Player(QObject):
     def getCurrentSongIndex(self):
         return self._currentIndex
     
-    def changePlayMode(self, mode: PlayMode):
+    def setPlayMode(self, mode: PlayMode):
         self._playMode = mode
         
     def getPlayerStatus(self) -> PlayerStatus:

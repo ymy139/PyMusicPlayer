@@ -8,8 +8,8 @@ class PlayStatus(IntEnum):
     PAUSED = 8
     
 class PlayMode(IntEnum):
-    NORMAL = 16
-    LOOP = 32
+    LOOP_LIST = 16
+    LOOP_ONE = 32
     RANDOM = 64
     
 class PlayerStatus(IntEnum):
