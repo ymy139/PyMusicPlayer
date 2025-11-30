@@ -1061,6 +1061,7 @@ class Pages(object):
             
         def setupWidgets(self) -> None:
             self.randomMode = QCheckBox("随机播放模式")
+            self.randomMode.setStyleSheet("color: #c3ccdf;")
             
             self._layout.addWidget(self.randomMode)
             self._layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))

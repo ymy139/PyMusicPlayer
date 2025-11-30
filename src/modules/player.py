@@ -127,9 +127,11 @@ class Player(QObject):
                     except TypeError: 
                         pass
             
+            self._playList.sort(key=lambda x: x.mediaInfo.artist)
             self._playerStatus = PlayerStatus.READY
+            self.playerReady.emit(self._playList)
         
-        self._playListUpdateThread = Thread(target=lambda: (update(), self.playerReady.emit(self._playList)), name="playListUpdateThread")
+        self._playListUpdateThread = Thread(target=lambda: update, name="playListUpdateThread", daemon=True)
         self._playListUpdateThread.start()
         
     def changeOutputDevice(self, outputDevice: QAudioDevice):
