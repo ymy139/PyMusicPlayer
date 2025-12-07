@@ -2,11 +2,14 @@
 import sys
 
 from PySide6.QtWidgets import QApplication
-from PySide6.QtGui import QFontDatabase, QFont
+from PySide6.QtGui import QFontDatabase, QFont, QPixmap
 
 app = QApplication(sys.argv)
 QFontDatabase.addApplicationFont("res/fonts/HarmonyOS_Sans_SC_Regular.ttf")
 app.setFont(QFont("HarmonyOS Sans SC"))
+app.setWindowIcon(QPixmap("res/imgs/icon.ico"))
+app.setApplicationDisplayName("PyMusicPlayer")
+app.setApplicationName("PyMusicPlayer")
 
 # Debug
 DEBUG_MODE = False

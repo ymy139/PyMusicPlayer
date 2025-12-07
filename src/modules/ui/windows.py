@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QWidget, QHBoxLayout,
                                QStackedLayout, QFrame, QListWidgetItem, QApplication,
                                QTableWidgetItem)
 from PySide6.QtCore import Qt, QRect, QPoint
-from PySide6.QtGui import QMouseEvent, QIcon
+from PySide6.QtGui import QMouseEvent, QIcon, QPixmap
 from qtawesome import icon as qtawesomeIcon
 
 from .widgets import SideMenuBar, TitleBar, PlayStateBar, Pages
@@ -41,6 +41,8 @@ class MainWindow(QMainWindow):
         self.setMouseTracking(True)
         self.resize(1200, 700)
         self.setStyleSheet("background-color: #2c313c; border-radius: 5px;")
+        self.setWindowIcon(QPixmap("res/imgs/icon.ico"))
+        self.setWindowTitle("PyMusicPlayer")
         
         self.setupWidgets()
         self.setupSignals()

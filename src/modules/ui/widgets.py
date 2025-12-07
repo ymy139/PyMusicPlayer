@@ -308,7 +308,7 @@ class TitleCard(QFrame):
         icon = QLabel(self)
         icon.setGeometry(0, 0, 70, 70)
         icon.setScaledContents(True)
-        icon.setPixmap(QPixmap("./res/imgs/icons/icon.ico"))
+        icon.setPixmap(QPixmap("./res/imgs/icon.ico"))
         
         title = QLabel("PyMusicPlayer", self)
         title.setGeometry(70, 10, 180, 30)
