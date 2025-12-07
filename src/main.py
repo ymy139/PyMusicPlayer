@@ -8,6 +8,12 @@ app = QApplication(sys.argv)
 QFontDatabase.addApplicationFont("res/fonts/HarmonyOS_Sans_SC_Regular.ttf")
 app.setFont(QFont("HarmonyOS Sans SC"))
 
+# Debug
+DEBUG_MODE = False
+if DEBUG_MODE: 
+    from os import environ
+    environ["QT_DEBUG_PLUGINS"] = "1"
+
 # main
 from pathlib import Path
 
