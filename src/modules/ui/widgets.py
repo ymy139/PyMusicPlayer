@@ -865,6 +865,7 @@ class Pages(object):
                     border-radius: 5px;
                     outline: none;
                     gridline-color: rgb(59, 64, 74);
+                    color: #c3ccdf;
                 }
                 
                 QTableWidget::item{ 
@@ -873,6 +874,10 @@ class Pages(object):
                 
                 QTableWidget::item:hover{
                     background-color: rgb(56, 61, 71);
+                }
+                
+                QHeaderView::section{
+                    color: #c3ccdf;
                 }
                 
                 QTableWidget::item:selected{
@@ -1030,6 +1035,7 @@ class Pages(object):
             self._layout = QVBoxLayout()
             
             self.setLayout(self._layout)
+            self.setStyleSheet("color: #c3ccdf;")
             self.setupWidgets()
             
         def setupWidgets(self) -> None:
@@ -1057,11 +1063,11 @@ class Pages(object):
             self._layout = QVBoxLayout()
             
             self.setLayout(self._layout)
+            self.setStyleSheet("color: #c3ccdf;")
             self.setupWidgets()
             
         def setupWidgets(self) -> None:
             self.randomMode = QCheckBox("随机播放模式")
-            self.randomMode.setStyleSheet("color: #c3ccdf;")
             
             self._layout.addWidget(self.randomMode)
             self._layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
