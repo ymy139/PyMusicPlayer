@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (QFrame, QWidget, QVBoxLayout, QLabel, QListWidget
                                QListWidgetItem, QSpacerItem, QSizePolicy, QHBoxLayout,
                                QPushButton, QSlider, QScrollArea, QLayout, QProgressBar,
                                QTableWidget, QHeaderView, QAbstractItemView, QStyledItemDelegate,
-                               QStyleOptionViewItem, QStyle, QTextBrowser, QCheckBox)
+                               QStyleOptionViewItem, QStyle, QTextBrowser, QComboBox, QListView)
 from PySide6.QtCore import (Qt, QSize, QPropertyAnimation, QTimer, Property, QEasingCurve, 
                             QParallelAnimationGroup, QSequentialAnimationGroup, QEvent, 
                             QModelIndex, QPersistentModelIndex, QAbstractItemModel)
@@ -14,7 +14,7 @@ from PySide6.QtGui import (QPixmap, QResizeEvent, QShowEvent, QColor, QPaintEven
 from qtawesome import icon as qtawesomeIcon
 
 from ..utils import createRoundedPixmap, parseLrc, humanizeDuration
-from ..types_ import MediaInfo
+from ..types_ import MediaInfo, PlayMode
 
 class IndeterminateProgressBar(QProgressBar):
     def __init__(self, parent: QWidget | None = None, slowCoefficient: float = 1.0):
@@ -1067,7 +1067,49 @@ class Pages(object):
             self.setupWidgets()
             
         def setupWidgets(self) -> None:
-            self.randomMode = QCheckBox("随机播放模式")
+            playModeLayout = QHBoxLayout()
             
-            self._layout.addWidget(self.randomMode)
+            self.playMode = QComboBox()
+            self.playMode.addItems(["列表循环", "单曲循环", "随机播放"])
+            self.playMode.setItemData(0, PlayMode.LOOP_LIST, Qt.ItemDataRole.UserRole)
+            self.playMode.setItemData(1, PlayMode.LOOP_ONE, Qt.ItemDataRole.UserRole)
+            self.playMode.setItemData(2, PlayMode.RANDOM, Qt.ItemDataRole.UserRole)
+            self.playMode.setCurrentIndex(0)
+            self.playMode.setView(QListView())
+            self.playMode.setStyleSheet("""
+                QComboBox {
+                    background-color: #21252d;
+                    border: 1px solid #848fa3;
+                    color: #c3ccdf;
+                    border-radius: 3px;
+                    padding-left: 3px;
+                    padding-right: 3px;
+                }
+                
+                QComboBox QAbstractItemView {
+                    border: 1px solid #848fa3;
+                    background-color: #21252d;
+                    border-radius: 3px;
+                    color: #c3ccdf;
+                }
+                
+                QComboBox::drop-down {
+                    border: none;
+                    background-color: transparent;
+                }
+                
+                QComboBox::down-arrow {
+                    image: url(res/imgs/arrow-down.svg);
+                    width: 30px;
+                    color: #c3ccdf;
+                }"""
+            )
+            
+            playModeLabel = QLabel("播放模式: ")
+            playModeLabel.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+            
+            playModeLayout.addWidget(playModeLabel)
+            playModeLayout.addWidget(self.playMode)
+            
+            self._layout.addLayout(playModeLayout)
             self._layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))

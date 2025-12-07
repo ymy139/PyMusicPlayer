@@ -65,11 +65,9 @@ def updateSliderProgress():
         except ZeroDivisionError: pass
         window.playStateBar.musicTimePlayed.setText(humanizeDuration(player.getPositionMs()))
 
-def setRandomMode(state: Qt.CheckState):
-    if state == Qt.CheckState.Checked: 
-        player.setPlayMode(PlayMode.RANDOM)
-    else: 
-        player.setPlayMode(PlayMode.LOOP_LIST)
+def setPlayMode(index: int):
+    mode: PlayMode = window.settingsPage.playMode.itemData(index, Qt.ItemDataRole.UserRole)
+    player.setPlayMode(mode)
 
 # connect signals
 player.playerReady.connect(window.onPlayerReady)
@@ -82,7 +80,7 @@ window.playStateBar.musicPlayProgress.sliderPressed.connect(onSliderPressed)
 window.playStateBar.musicPlayProgress.sliderReleased.connect(onSliderReleased)
 window.playListPage.playList.itemDoubleClicked.connect(play)
 window.musicDetailPage.lyricDisplayer.setGetTimeFunc(player.getPositionMs)
-window.settingsPage.randomMode.checkStateChanged.connect(setRandomMode)
+window.settingsPage.playMode.currentIndexChanged.connect(setPlayMode)
 
 # update slider's progress from time to time
 updateTimer = QTimer()
