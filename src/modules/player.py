@@ -57,6 +57,7 @@ class Player(QObject):
         
     def setPositionMs(self, posMs: int) -> None:
         self._mediaPlayer.setPosition(posMs)
+        print("setPositionMs called")
     
     def getPositionMs(self) -> int:
         return self._mediaPlayer.position()
@@ -131,7 +132,7 @@ class Player(QObject):
             self._playerStatus = PlayerStatus.READY
             self.playerReady.emit(self._playList)
         
-        self._playListUpdateThread = Thread(target=lambda: update, name="playListUpdateThread", daemon=True)
+        self._playListUpdateThread = Thread(target=update, name="playListUpdateThread")
         self._playListUpdateThread.start()
         
     def changeOutputDevice(self, outputDevice: QAudioDevice):
