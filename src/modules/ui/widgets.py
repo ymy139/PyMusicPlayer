@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QFrame, QWidget, QVBoxLayout, QLabel, QListWidget
 from PySide6.QtCore import (Qt, QSize, QPropertyAnimation, QTimer, Property, QEasingCurve, 
                             QParallelAnimationGroup, QSequentialAnimationGroup, QEvent, 
                             QModelIndex, QPersistentModelIndex, QAbstractItemModel)
-from PySide6.QtGui import (QPixmap, QFont, QResizeEvent, QShowEvent, QColor, QPaintEvent, 
+from PySide6.QtGui import (QPixmap, QResizeEvent, QShowEvent, QColor, QPaintEvent, 
                            QPainter, QBrush)
 from qtawesome import icon as qtawesomeIcon
 

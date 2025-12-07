@@ -18,4 +18,4 @@
 
 您可以收费提供软件的复制、分发和支持服务，但应提供源代码或者提供获取源代码的途径，且不能收取许可费或专利使用费。
 
-本软件中嵌入的`res/fonts/HarmonyOS_Sans_SC_Regular.ttf`字体文件基于HarmonyOS Sans Fonts License Agreement分发嵌入，许可详情见`LICENSE-font`文件。
+本软件中嵌入的`res/fonts/HarmonyOS_Sans_SC_Regular.ttf`字体文件基于HarmonyOS Sans Fonts License Agreement分发嵌入，许可详情见`res/fonts/LICENSE`文件。
