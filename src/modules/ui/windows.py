@@ -273,8 +273,8 @@ class MainWindow(QMainWindow):
                 self.playListPage.playList.setItem(index, 0, tableItem)
             else:
                 cover = QIcon()
-                cover.addFile("res/imgs/ddefaultCover.png", mode=QIcon.Mode.Normal, state=QIcon.State.Off)
-                cover.addFile("res/imgs/ddefaultCover.png", mode=QIcon.Mode.Selected, state=QIcon.State.Off)
+                cover.addFile("res/imgs/defaultCover.png", mode=QIcon.Mode.Normal, state=QIcon.State.Off)
+                cover.addFile("res/imgs/defaultCover.png", mode=QIcon.Mode.Selected, state=QIcon.State.Off)
                 tableItem = QTableWidgetItem(item.mediaInfo.title)
                 tableItem.setToolTip(item.mediaInfo.title)
                 tableItem.setIcon(QIcon(cover))
