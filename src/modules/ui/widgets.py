@@ -878,6 +878,7 @@ class Pages(object):
                 
                 QHeaderView::section{
                     color: #c3ccdf;
+                    background-color: transparent;
                 }
                 
                 QTableWidget::item:selected{
