@@ -5,6 +5,7 @@ from threading import Thread
 
 from PySide6.QtCore import QUrl, Signal, QObject
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput, QAudioDevice
+from pypinyin import pinyin, Style
 
 from .types_ import PlayStatus, MediaInfo, MediaItem, SUPPORTED_AUDIO_FORMATS, PlayMode, PlayerStatus
 from .utils import getMediaItemFromPath
@@ -134,7 +135,7 @@ class Player(QObject):
                         pass
                 self.parseOneSuccess.emit()
             
-            self._playList.sort(key=lambda x: x.mediaInfo.artist)
+            self._playList.sort(key=lambda x: pinyin(x.mediaInfo.artist, style=Style.TONE3, errors="replace"))
             self._playerStatus = PlayerStatus.READY
             self.playerReady.emit(self._playList)
         

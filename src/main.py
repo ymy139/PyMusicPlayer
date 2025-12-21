@@ -87,7 +87,7 @@ window.playListPage.playList.itemDoubleClicked.connect(play)
 window.musicDetailPage.lyricDisplayer.setGetTimeFunc(player.getPositionMs)
 window.settingsPage.playMode.currentIndexChanged.connect(setPlayMode)
 
-# update slider's progress from time to time
+# update slider's progress
 updateTimer = QTimer()
 updateTimer.setInterval(500)
 updateTimer.timeout.connect(updateSliderProgress)
