@@ -118,7 +118,7 @@ def getMediaItemFromPath(mediaPath: Path, lyricsDir: Path, coversDir: Path) -> M
         except Exception as e:
             coverFilePath = None
             
-        lyricsFilePath = Path(lyricsDir / mediaPath.stem).with_suffix(".lrc")
+        lyricsFilePath = Path(lyricsDir / mediaPath.name).with_suffix(".lrc")
         if not lyricsFilePath.exists():
             lyricsFilePath = None
         
@@ -142,7 +142,7 @@ def getMediaItemFromPath(mediaPath: Path, lyricsDir: Path, coversDir: Path) -> M
         except Exception as e:
             coverFilePath = None
             
-        lyricsFilePath = Path(lyricsDir / mediaPath.stem).with_suffix(".lrc")
+        lyricsFilePath = Path(lyricsDir / mediaPath.name).with_suffix(".lrc")
         if not lyricsFilePath.exists():
             lyricsFilePath = None
             
