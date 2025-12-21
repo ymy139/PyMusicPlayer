@@ -9,7 +9,7 @@ requires-python = ">=3.11"
 dependencies = [
     "filetype>=1.2.0",
     "mutagen>=1.47.0",
-    "pyside6>=6.9.2",
+    "pyside6==6.9.2",
     "qtawesome>=1.4.0",
 ]
 authors = [
