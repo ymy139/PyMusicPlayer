@@ -1,5 +1,6 @@
 from typing import Literal, Callable
 from dataclasses import dataclass
+from math import floor
 
 from PySide6.QtWidgets import (QFrame, QWidget, QVBoxLayout, QLabel, QListWidget, 
                                QListWidgetItem, QSpacerItem, QSizePolicy, QHBoxLayout,
@@ -8,7 +9,7 @@ from PySide6.QtWidgets import (QFrame, QWidget, QVBoxLayout, QLabel, QListWidget
                                QStyleOptionViewItem, QStyle, QTextBrowser, QComboBox, QListView)
 from PySide6.QtCore import (Qt, QSize, QPropertyAnimation, QTimer, Property, QEasingCurve, 
                             QParallelAnimationGroup, QSequentialAnimationGroup, QEvent, 
-                            QModelIndex, QPersistentModelIndex, QAbstractItemModel)
+                            QModelIndex, QPersistentModelIndex, QAbstractItemModel, QLocale)
 from PySide6.QtGui import (QPixmap, QResizeEvent, QShowEvent, QColor, QPaintEvent, 
                            QPainter, QBrush)
 from qtawesome import icon as qtawesomeIcon
@@ -100,6 +101,77 @@ class IndeterminateProgressBar(QProgressBar):
         w = int(0.4 * self.width())
         r = self.height() / 2
         painter.drawRoundedRect(x, 0, w, self.height(), r, r)
+
+class ProgressBar(QProgressBar):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._val = 0
+        self.setFixedHeight(4)
+
+        self._backgroundColor = QColor(0, 0, 0, 155)
+        self._barColor = QColor()
+        self.ani = QPropertyAnimation(self, b'val', self)
+        self.valueChanged.connect(self._onValueChanged)
+        self.setValue(0)
+
+    def getVal(self):
+        return self._val
+
+    def setVal(self, v: float):
+        self._val = v
+        self.update()
+
+    def _onValueChanged(self, value):
+        self.ani.stop()
+        self.ani.setEndValue(value)
+        self.ani.setDuration(150)
+        self.ani.start()
+        super().setValue(value)
+
+    def setBarColor(self, color: QColor):
+        self._barColor = color
+
+    def setBackgroundColor(self, color):
+        self._backgroundColor = QColor(color)
+        self.update()
+
+    def valText(self):
+        if self.maximum() <= self.minimum():
+            return ""
+
+        total = self.maximum() - self.minimum()
+        result = self.format()
+        locale = self.locale()
+        locale.setNumberOptions(locale.numberOptions() | QLocale.NumberOption.OmitGroupSeparator)
+        result = result.replace("%m", locale.toString(total))
+        result = result.replace("%v", locale.toString(self.getVal()))
+
+        if total == 0:
+            return result.replace("%p", locale.toString(100))
+
+        progress = int((self.getVal() - self.minimum()) * 100 / total)
+        return result.replace("%p", locale.toString(progress))
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHints(QPainter.RenderHint.Antialiasing)
+
+        # draw background
+        painter.setPen(self._backgroundColor)
+        y = floor(self.height() / 2)
+        painter.drawLine(0, y, self.width(), y)
+
+        if self.minimum() >= self.maximum():
+            return
+
+        # draw bar
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(self._barColor)
+        w = int(self.getVal() / (self.maximum() - self.minimum()) * self.width())
+        r = self.height() / 2
+        painter.drawRoundedRect(0, 0, w, self.height(), r, r)
+
+    val = Property(float, getVal, setVal)
 
 class LyricWidget(QTextBrowser):
     def __init__(self):
@@ -754,7 +826,7 @@ class Pages(object):
         @dataclass(frozen=True)
         class SyncButtonIcon:
             finish = qtawesomeIcon("fa5s.check-circle", color="#0f7b0f")
-            syncing = qtawesomeIcon("mdi.dots-horizontal-circle", color="#7b700f")
+            syncing = qtawesomeIcon("mdi.dots-horizontal-circle", color="#C3B21A")
             
         class HoverHighlightDelegate(QStyledItemDelegate):
             def __init__(self, parent=None):
@@ -797,7 +869,6 @@ class Pages(object):
                     self.setHoveredRow(index.row())
                 elif event.type() == QEvent.Type.Leave:
                     self.setHoveredRow(-1)
-                    
                 
                 return super().editorEvent(event, model, option, index)
             
@@ -840,8 +911,11 @@ class Pages(object):
             topLayout.addWidget(self.syncStatus)
             topLayout.addWidget(self.syncButton)
             
-            self.progressBar = IndeterminateProgressBar(slowCoefficient=1.2)
-            self.progressBar.setBarColor(QColor(93, 152, 204))
+            self.parseIndeterminateProgressBar = IndeterminateProgressBar(slowCoefficient=1.2)
+            self.parseIndeterminateProgressBar.setBarColor(QColor(93, 152, 204))
+            
+            self.parseProgressBar = ProgressBar()
+            self.parseProgressBar.setBarColor(QColor(93, 152, 204))
             
             self.playList = QTableWidget()
             self.playList.setColumnCount(4)
@@ -922,7 +996,7 @@ class Pages(object):
                 }""")
             
             self._layout.addLayout(topLayout)
-            self._layout.addWidget(self.progressBar)
+            self._layout.addWidget(self.parseIndeterminateProgressBar)
             self._layout.addWidget(self.playList)
             
         def resetColumnsWidth(self):

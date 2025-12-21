@@ -76,6 +76,8 @@ def setPlayMode(index: int):
 player.playerReady.connect(window.onPlayerReady)
 player.onNextSong.connect(window.updateMediaInfo)
 player.onPreviousSong.connect(window.updateMediaInfo)
+player.listFileSuccess.connect(window.onListFileSuccess)
+player.parseOneSuccess.connect(window.onParseOneSuccess)
 window.playStateBar.playPauseButton.clicked.connect(togglePause)
 window.playStateBar.nextButton.clicked.connect(player.next)
 window.playStateBar.previousButton.clicked.connect(player.previous)

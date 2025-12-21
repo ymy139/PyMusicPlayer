@@ -14,6 +14,8 @@ class Player(QObject):
     playerReady = Signal(list)
     onNextSong = Signal(MediaInfo)
     onPreviousSong = Signal(MediaInfo)
+    parseOneSuccess = Signal()
+    listFileSuccess = Signal(int)
         
     def __init__(self, 
                  outputDevice: QAudioDevice) -> None:
@@ -120,13 +122,17 @@ class Player(QObject):
             
             self._playerStatus = PlayerStatus.PREPARING
             
-            for targetFile in os.listdir(musicDir):
+            musicFiles = os.listdir(musicDir)
+            self.listFileSuccess.emit(len(musicFiles))
+            
+            for targetFile in musicFiles:
                 targetFilePath: Path = (musicDir / targetFile).absolute()
                 if targetFile.lower().endswith(SUPPORTED_AUDIO_FORMATS) and targetFilePath.is_file():
                     try: 
                         self._playList.append(getMediaItemFromPath(targetFilePath, lyricsDir, coversDir))
                     except TypeError: 
                         pass
+                self.parseOneSuccess.emit()
             
             self._playList.sort(key=lambda x: x.mediaInfo.artist)
             self._playerStatus = PlayerStatus.READY

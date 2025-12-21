@@ -256,9 +256,10 @@ class MainWindow(QMainWindow):
             
     def onPlayerReady(self, playList: list[MediaItem]):
         self.playListPage.songCount.setText(f"当前列表中有 {len(playList)} 首歌曲")
-        self.playListPage.progressBar.stop()
+        self.playListPage.parseIndeterminateProgressBar.stop()
         self.playListPage.syncStatus.setText("播放列表已更新完成")
         self.playListPage.syncButton.setIcon(self.playListPage.SyncButtonIcon.finish)
+        self.playListPage.parseProgressBar.hide()
         
         self.playListPage.playList.setRowCount(len(playList))
         
@@ -293,3 +294,13 @@ class MainWindow(QMainWindow):
     def updateMediaInfo(self, mediaInfo: MediaInfo):
         self.playStateBar.setMediaInfo(mediaInfo)
         self.musicDetailPage.setMediaInfo(mediaInfo)
+        
+    def onListFileSuccess(self, count: int):
+        self.playListPage.parseIndeterminateProgressBar.stop()
+        self.playListPage.parseProgressBar.setRange(0, count)
+        self.playListPage.parseProgressBar.setValue(0)
+        self.playListPage.layout().replaceWidget(self.playListPage.parseIndeterminateProgressBar, # pyright: ignore[reportOptionalMemberAccess]
+                                                 self.playListPage.parseProgressBar)
+
+    def onParseOneSuccess(self):
+        self.playListPage.parseProgressBar.setValue(self.playListPage.parseProgressBar.value() + 1)
