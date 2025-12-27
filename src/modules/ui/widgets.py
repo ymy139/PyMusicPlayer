@@ -15,7 +15,7 @@ from PySide6.QtGui import (QPixmap, QResizeEvent, QShowEvent, QColor, QPaintEven
 from qtawesome import icon as qtawesomeIcon
 
 from ..utils import createRoundedPixmap, parseLrc, humanizeDuration
-from ..types_ import MediaInfo, PlayMode
+from ..types_ import MediaInfo, PlayMode, LrcObject
 
 class IndeterminateProgressBar(QProgressBar):
     def __init__(self, parent: QWidget | None = None, slowCoefficient: float = 1.0):
@@ -223,6 +223,8 @@ class LyricWidget(QTextBrowser):
         self.updateTimer.stop()
         self.parsedLrcContent = parseLrc(lrcContent)
         self.parsedLrcContent.sort(key = lambda x: x.timeMs)
+        if self.parsedLrcContent[0].timeMs >= 0:
+            self.parsedLrcContent.insert(0, LrcObject(0, '······'))
         self.updateTimer.start()
         
     def setGetTimeFunc(self, func: Callable[[], int]):
@@ -242,7 +244,7 @@ class LyricWidget(QTextBrowser):
         
         else:
             for i, lrc in enumerate(parsedLrcContent):
-                if lrc.timeMs >= nowTimeMs:
+                if lrc.timeMs >= nowTimeMs and i != 0:
                     parsedLrcContent = parsedLrcContent[i-1:]
                     break
                 
