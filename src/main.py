@@ -1,5 +1,17 @@
 # init application and load font before everything
+
+# Debug
+DEBUG_MODE = False
+if DEBUG_MODE: 
+    from os import environ
+    environ["QT_DEBUG_PLUGINS"] = "1"
+
 import sys
+
+# fix the problem of window movement on the linux platform
+if sys.platform == "linux":
+    from os import environ
+    environ["QT_QPA_PLATFORM"] = "xcb"
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QFontDatabase, QFont, QPixmap
@@ -11,11 +23,6 @@ app.setWindowIcon(QPixmap("res/imgs/icon.ico"))
 app.setApplicationDisplayName("PyMusicPlayer")
 app.setApplicationName("PyMusicPlayer")
 
-# Debug
-DEBUG_MODE = False
-if DEBUG_MODE: 
-    from os import environ
-    environ["QT_DEBUG_PLUGINS"] = "1"
 
 # main
 from pathlib import Path
