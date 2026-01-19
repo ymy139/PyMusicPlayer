@@ -1,4 +1,4 @@
-from enum import IntEnum
+from enum import IntEnum, Enum
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -37,3 +37,29 @@ class LrcObject:
     """Used to store a line of lyric"""
     timeMs: int
     text: str
+
+class BaseDirection:
+    """define the base direction of the cursor, 
+    every direction should be a subclass of BaseDirection.  
+    This object's x and y's orgin point is center of the window, 
+    just like this:
+    
+    | (-1,1) | (0,1) | (1,1) |
+    |--------|-------|-------|
+    | (-1,0) | (0,0) | (1,0) |
+    | (-1,-1)| (0,-1)| (1,-1)|
+    """
+    def __init__(self, x: int, y: int) -> None:
+        super().__init__()
+        self.x = x
+        self.y = y
+
+class CursorDirection(Enum):
+    LEFT = BaseDirection(-1, 0)
+    RIGHT = BaseDirection(1, 0)
+    TOP = BaseDirection(0, 1)
+    BOTTOM = BaseDirection(0, -1)
+    TOP_LEFT = BaseDirection(-1, 1)
+    TOP_RIGHT = BaseDirection(1, 1)
+    BOTTOM_LEFT = BaseDirection(-1, -1)
+    BOTTOM_RIGHT = BaseDirection(1, -1)

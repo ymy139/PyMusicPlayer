@@ -1,4 +1,3 @@
-from typing import Union, Literal
 from pathlib import Path
 import re
 
@@ -8,9 +7,11 @@ from PySide6.QtGui import QPixmap
 from mutagen import flac, id3, mp3
 from filetype import guess_mime as checkFileType
 
-from .types_ import MediaInfo, MediaItem, LrcObject
+from .types_ import MediaInfo, MediaItem, LrcObject, CursorDirection
 
-def createRoundedPixmap(pixmap: QPixmap, radius: Union[int, float], targetSize: QSize | None = None) -> QPixmap:
+def createRoundedPixmap(pixmap: QPixmap, 
+                        radius: int | float, 
+                        targetSize: QSize | None = None) -> QPixmap:
     if pixmap.isNull():
         return pixmap
 
@@ -43,8 +44,7 @@ def createRoundedPixmap(pixmap: QPixmap, radius: Union[int, float], targetSize: 
 
     return destImage
 
-def getCursorDirection(windowSize: QSize, relativePos: QPoint, contentsMargin: int) \
-    -> Literal['top-left', 'top-right', 'bottom-left', 'bottom-right', 'top', 'bottom', 'left', 'right'] | None:
+def getCursorDirection(windowSize: QSize, relativePos: QPoint, contentsMargin: int) -> CursorDirection | None:
         x, y = relativePos.x(), relativePos.y()
         width, height = windowSize.width(), windowSize.height()
         reservedArea = 2
@@ -55,14 +55,14 @@ def getCursorDirection(windowSize: QSize, relativePos: QPoint, contentsMargin: i
         onLeft = x < margin
         onRight = x > width - margin
         
-        if onTop and onLeft: return "top-left"
-        elif onTop and onRight: return "top-right"
-        elif onBottom and onLeft: return "bottom-left"
-        elif onBottom and onRight: return "bottom-right"
-        elif onTop: return "top"
-        elif onBottom: return "bottom"
-        elif onLeft: return "left"
-        elif onRight: return "right"
+        if onTop and onLeft: return CursorDirection.TOP_LEFT
+        elif onTop and onRight: return CursorDirection.TOP_RIGHT
+        elif onBottom and onLeft: return CursorDirection.BOTTOM_LEFT
+        elif onBottom and onRight: return CursorDirection.BOTTOM_RIGHT
+        elif onTop: return CursorDirection.TOP
+        elif onBottom: return CursorDirection.BOTTOM
+        elif onLeft: return CursorDirection.LEFT
+        elif onRight: return CursorDirection.RIGHT
         else: return None
 
 def humanizeDuration(milliseconds: int) -> str:

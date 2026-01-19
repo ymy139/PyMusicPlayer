@@ -7,7 +7,7 @@ from qtawesome import icon as qtawesomeIcon
 
 from .widgets import SideMenuBar, TitleBar, PlayStateBar, Pages
 from ..utils import getCursorDirection, humanizeDuration
-from ..types_ import MediaItem, MediaInfo
+from ..types_ import MediaItem, MediaInfo, CursorDirection
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -135,17 +135,15 @@ class MainWindow(QMainWindow):
                 if not self.isMaximized():
                     # updata the cursor if the mouse is over the margins
                     cursorPos = a0.position().toPoint()
-                    direction = getCursorDirection(self.size(), 
-                                                   cursorPos, 
-                                                   self._contentsMargin)
+                    direction = getCursorDirection(self.size(), cursorPos, self._contentsMargin)
                     
-                    if direction == "top" or direction == "bottom":
+                    if direction == CursorDirection.TOP or direction == CursorDirection.BOTTOM:
                         self.setCursor(Qt.CursorShape.SizeVerCursor)
-                    elif direction == "left" or direction == "right":
+                    elif direction == CursorDirection.LEFT or direction == CursorDirection.RIGHT:
                         self.setCursor(Qt.CursorShape.SizeHorCursor)
-                    elif direction == "top-left" or direction == "bottom-right":
+                    elif direction == CursorDirection.TOP_LEFT or direction == CursorDirection.BOTTOM_RIGHT:
                         self.setCursor(Qt.CursorShape.SizeFDiagCursor)
-                    elif direction == "top-right" or direction == "bottom-left":
+                    elif direction == CursorDirection.TOP_RIGHT or direction == CursorDirection.BOTTOM_LEFT:
                         self.setCursor(Qt.CursorShape.SizeBDiagCursor)
                     else:
                         self.setCursor(Qt.CursorShape.ArrowCursor)
@@ -163,15 +161,15 @@ class MainWindow(QMainWindow):
                         width = windowGeometry.width()
                         height = windowGeometry.height()  
                         
-                        if "top" in self._dragDirection:
+                        if self._dragDirection.value.y == 1:
                             height -= delta.y()
                             if height >= self.minimumHeight(): y += delta.y()
-                        if "bottom" in self._dragDirection:
+                        if self._dragDirection.value.y == -1:
                             height += delta.y()
-                        if "left" in self._dragDirection:
+                        if self._dragDirection.value.x == -1:
                             width -= delta.x()
                             if width >= self.minimumWidth(): x += delta.x()
-                        if "right" in self._dragDirection:
+                        if self._dragDirection.value.x == 1:
                             width += delta.x()
                         
                         width = max(width, self.minimumWidth())
